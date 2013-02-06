@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require 'splits'
+require 'optparse'
+
+options = {}
+
+usage = "Usage: splits [-o results.yml] [-p pb.yml] [-g game.yml]"
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: splits [-p PB] game.yml"
+
+  opts.on("-o", "--output FILE", String, "File to write results to") do |file|
+    options[:results] = file
+  end
+
+  opts.on("-p", "--pb FILE", String, "Personal best") do |file|
+    options[:pb] = file
+  end
+
+  opts.on("-g", "--game FILE", String, "Game definition") do |file|
+    options[:game] = file
+  end
+
+end.parse!
+
+Splits.new(options).run!
