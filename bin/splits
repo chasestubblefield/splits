@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require_relative '../bundle/bundler/setup'
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'splits'
+require 'optparse'
+
+options = {}
+
+usage = "Usage: splits [-p PB] game.yml"
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: splits [-p PB] game.yml"
+
+  opts.on("-p", "--pb PB", String, "Personal best") do |pb|
+    options[:pb] = pb
+  end
+
+  opts.on("-o", "--output FILE", String, "File to write results to") do |o|
+    options[:results] = o
+  end
+end.parse!
+
+abort usage if ARGV.first.nil?
+
+Splits.new(ARGV.first, options).run!
