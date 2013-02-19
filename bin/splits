@@ -22,6 +22,18 @@ OptionParser.new do |opts|
     options[:game] = file
   end
 
+  opts.on("-c", "--channel CHANNEL", String, "Race on SRL to join with bot (i.e. \"#srl-4ew34\")") do |channel|
+    options[:channel] = channel
+  end
+
+  opts.on("-n", "--nick NICK", String, "Nickname for IRC") do |nick|
+    options[:nick] = nick
+  end
+
+  opts.on("-i", "--identify PASSWORD", String, "Password to identify on IRC") do |password|
+    options[:password] = password
+  end
+
 end.parse!
 
 Splits.new(options).run!

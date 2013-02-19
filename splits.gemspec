@@ -18,5 +18,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency('colorize')
+  gem.add_dependency('cinch')
+  gem.add_dependency('cinch-identify')
   gem.add_development_dependency('rake')
 end

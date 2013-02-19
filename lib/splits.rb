@@ -18,15 +18,26 @@ class Splits
       if pb_data && pb_data['splits'][name]
         pb_time_duration = TimeDuration.new(pb_data['splits'][name] - pb_data['start'])
       end
-      Split.new(name, pb_time_duration)
+      if game_data['irc_splits'] && game_data['irc_splits'][name]
+        irc_split = game_data['irc_splits'][name]
+      end
+      Split.new(name, pb_time_duration, irc_split)
     end.freeze
 
     @results_file = options[:results]
+    @channel = options[:channel]
+    @nick = options[:nick]
+    @password = options[:password]
 
     UI.column_size = @splits.map(&:name).map(&:length).max
   end
 
   def run!
+    if @channel && @nick
+      @bot = Splits::Bot.new(@channel, self, @nick, @password)
+      @bot.start!
+      @bot.enter!
+    end
     UI.ready(@title, @splits)
     UI.wait_for_char do |char|
       case char
@@ -37,7 +48,11 @@ class Splits
         elsif started?
           split!
         else
-          start!
+          if @bot
+            @bot.ready!
+          else
+            start!
+          end
         end
       end
     end
@@ -56,12 +71,21 @@ class Splits
     split.time = split_time
     split.time_duration = time_duration
 
-    UI.split(split)
-
     if next_split.nil?
       @finished = true
-      UI.finish(time_duration, @results_file)
     end
+
+    if @bot
+      if @finished
+        @bot.done!
+      elsif split.irc_split
+        @bot.split!(split.irc_split)
+      end
+    end
+
+    UI.split(split)
+
+    UI.finish(time_duration, @results_file) if @finished
   end
 
   def save!
@@ -99,3 +123,4 @@ end
 require 'splits/split'
 require 'splits/time_duration'
 require 'splits/ui'
+require 'splits/bot'

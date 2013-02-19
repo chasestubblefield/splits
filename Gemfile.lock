@@ -2,11 +2,16 @@ PATH
   remote: .
   specs:
     splits (0.1)
+      cinch
+      cinch-identify
       colorize
 
 GEM
   remote: https://rubygems.org/
   specs:
+    cinch (2.0.4)
+    cinch-identify (1.4.1)
+      cinch (~> 2.0)
     colorize (0.5.8)
     rake (10.0.3)
 
